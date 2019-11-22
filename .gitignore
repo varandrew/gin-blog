@@ -16,3 +16,16 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
+# dotenv environment variables file
+.env
+
+# Optional idea cache directory
+.idea
+
+# Optional visual studio code  cache directory
+.vscode
+.history
+
+# misc
+.DS_Store
+yarn-error.log
