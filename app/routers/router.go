@@ -4,12 +4,30 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
+	"github.com/varandrew/gin-product/app/controllers"
+	"github.com/varandrew/gin-product/app/controllers/v1"
 	"github.com/varandrew/gin-product/app/middlewares"
 	"github.com/varandrew/gin-product/app/pkg/sd"
 	"github.com/varandrew/gin-product/app/pkg/setting"
-
-	v1 "github.com/varandrew/gin-product/app/controllers/v1"
+	_ "github.com/varandrew/gin-product/docs" // To resolve failed to load spec.
 )
+
+// @title Swagger Blog API
+// @version 1.0
+// @description This is a gin blog server.
+// @termsOfService https://razeen.me
+
+// @contact.name varandrew
+// @contact.url https://github.com/varandrew
+// @contact.email varandrewchen@gmail.com
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host 127.0.0.1:8000
+// @BasePath /api/v1
 
 func InitRouter() *gin.Engine {
 	g := gin.New()
@@ -23,12 +41,17 @@ func InitRouter() *gin.Engine {
 
 	gin.SetMode(setting.RunMode)
 
+	g.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	// 404 Handler.
 	g.NoRoute(func(c *gin.Context) {
 		c.String(http.StatusNotFound, "The incorrect API route.")
 	})
 
+	g.GET("/auth", controllers.GetAuth)
+
 	apiV1 := g.Group("/api/v1")
+	apiV1.Use(middlewares.JWT())
 	{
 		apiV1.GET("/tags", v1.GetTags)
 		apiV1.POST("/tags", v1.AddTag)

@@ -29,3 +29,8 @@
 # misc
 .DS_Store
 yarn-error.log
+
+# runtime
+runtime/*
+!runtime/qrcode/bg.jpg
+!runtime/fonts
