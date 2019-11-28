@@ -7,7 +7,6 @@ import (
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-
 	"github.com/varandrew/gin-product/app/pkg/setting"
 )
 

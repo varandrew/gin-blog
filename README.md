@@ -4,7 +4,7 @@
 ## 项目目录
 
 ```text
-go-gin-example/
+gin-blog/
 ├── README.md
 ├── app
 │   ├── controllers
