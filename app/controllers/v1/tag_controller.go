@@ -6,7 +6,6 @@ import (
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"github.com/unknwon/com"
-
 	"github.com/varandrew/gin-product/app/models"
 	"github.com/varandrew/gin-product/app/pkg/errno"
 	"github.com/varandrew/gin-product/app/pkg/setting"
@@ -32,7 +31,7 @@ func GetTags(c *gin.Context) {
 
 	code := errno.SUCCESS
 
-	data["list"] = models.GetTags(utils.GetPage(c), setting.PageSize, maps)
+	data["list"] = models.GetTags(utils.GetPage(c), setting.AppSetting.PageSize, maps)
 	data["total"] = models.GetTagTotal(maps)
 
 	c.JSON(http.StatusOK, gin.H{
@@ -41,7 +40,6 @@ func GetTags(c *gin.Context) {
 		"data": data,
 	})
 }
-
 
 // 新增文章标签
 func AddTag(c *gin.Context) {

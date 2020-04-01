@@ -8,15 +8,23 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/varandrew/gin-product/app/models"
+	"github.com/varandrew/gin-product/app/pkg/logging"
 	"github.com/varandrew/gin-product/app/pkg/setting"
 	"github.com/varandrew/gin-product/app/routers"
 )
 
+func init() {
+	setting.Setup()
+	models.Setup()
+	logging.Setup()
+}
+
 func main() {
 	routersInit := routers.InitRouter()
-	readTimeout := setting.ReadTimeout
-	writeTimeout := setting.WriteTimeout
-	endPoint := fmt.Sprintf(":%d", setting.HTTPPort)
+	readTimeout := setting.ServerSetting.ReadTimeout
+	writeTimeout := setting.ServerSetting.WriteTimeout
+	endPoint := fmt.Sprintf(":%d", setting.ServerSetting.HttpPort)
 	maxHeaderBytes := 1 << 20
 
 	server := &http.Server{
@@ -57,7 +65,7 @@ func main() {
 func pingServer() error {
 	for i := 0; i < 10; i++ {
 		// Ping the server by sending a GET request to `/health`.
-		resp, err := http.Get("http://127.0.0.1:" + strconv.Itoa(setting.HTTPPort) + "/sd/health")
+		resp, err := http.Get("http://127.0.0.1:" + strconv.Itoa(setting.ServerSetting.HttpPort) + "/sd/health")
 		if err == nil && resp.StatusCode == 200 {
 			return nil
 		}

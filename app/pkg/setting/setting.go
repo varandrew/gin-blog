@@ -7,52 +7,67 @@ import (
 	"github.com/go-ini/ini"
 )
 
-var (
-	Conf *ini.File
+type App struct {
+	JwtSecret       string
+	PageSize        int
+	RuntimeRootPath string
 
-	RunMode string
+	ImagePrefixUrl string
+	ImageSavePath  string
+	ImageMaxSize   int
+	ImageAllowExts []string
 
-	HTTPPort     int
+	LogSavePath string
+	LogSaveName string
+	LogFileExt  string
+	TimeFormat  string
+}
+
+var AppSetting = &App{}
+
+type Server struct {
+	RunMode      string
+	HttpPort     int
 	ReadTimeout  time.Duration
 	WriteTimeout time.Duration
+}
 
-	PageSize  int
-	JwtSecret string
-)
+var ServerSetting = &Server{}
 
-func init() {
-	var err error
-	Conf, err = ini.Load("conf/app.ini")
+type Database struct {
+	Type        string
+	User        string
+	Password    string
+	Host        string
+	Name        string
+	TablePrefix string
+}
+
+var DatabaseSetting = &Database{}
+
+func Setup() {
+	Conf, err := ini.Load("conf/app.ini")
 	if err != nil {
 		log.Fatalf("Fail to parse 'conf/app.ini': %v", err)
 	}
 
-	LoadBase()
-	LoadServer()
-	LoadApp()
-}
-
-func LoadBase() {
-	RunMode = Conf.Section("server").Key("RunMode").MustString("debug")
-}
-
-func LoadServer() {
-	sec, err := Conf.GetSection("server")
+	err = Conf.Section("app").MapTo(AppSetting)
 	if err != nil {
-		log.Fatal("Fail to get section 'server' : %v", err)
+		log.Fatalf("Conf.MapTo AppSetting err: %v", err)
 	}
 
-	HTTPPort = sec.Key("HttpPort").MustInt(8000)
-	ReadTimeout = time.Duration(sec.Key("ReadTimeout").MustInt(60)) * time.Second
-	WriteTimeout = time.Duration(sec.Key("WriteTimeout").MustInt(60)) * time.Second
-}
+	AppSetting.ImageMaxSize *= 1024 * 1024
 
-func LoadApp() {
-	sec, err := Conf.GetSection("app")
+	err = Conf.Section("server").MapTo(ServerSetting)
 	if err != nil {
-		log.Fatal("Fail to get section 'app': %v", err)
+		log.Fatalf("Conf.MapTo ServerSetting err: %v", err)
 	}
 
-	JwtSecret = sec.Key("JwtSecret").MustString("!@)*#)!@U#@*!@!)")
-	PageSize = sec.Key("PageSize").MustInt(10)
+	ServerSetting.ReadTimeout *= time.Second
+	ServerSetting.WriteTimeout *= time.Second
+
+	err = Conf.Section("database").MapTo(DatabaseSetting)
+	if err != nil {
+		log.Fatalf("Conf.MapTo DatabaseSetting err: %v", err)
+	}
 }

@@ -9,7 +9,7 @@ import (
 )
 
 // GetSize get the file size
-func GetSize(f multipart.File) (int, error)  {
+func GetSize(f multipart.File) (int, error) {
 	content, err := ioutil.ReadAll(f)
 
 	return len(content), err

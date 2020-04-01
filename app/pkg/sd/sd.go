@@ -2,20 +2,29 @@ package sd
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/disk"
 	"github.com/shirou/gopsutil/load"
 	"github.com/shirou/gopsutil/mem"
 )
 
+//const (
+//	B = 1
+//	KB = 1024 * B
+//	MB = 1024 * KB
+//	GB = 1024 * MB
+//)
+
 const (
-	B = 1
-	KB = 1024 * B
-	MB = 1024 * KB
-	GB = 1024 * MB
+	_ = iota
+	KB = 1 << (10 * iota)
+	MB = 1 << (10 * iota)
+	GB = 1 << (10 * iota)
+	TB = 1 << (10 * iota)
+	PB = 1 << (10 * iota)
 )
 
 // HealthCheck shows `OK` as the ping-pong result.
@@ -32,6 +41,7 @@ func DiskCheck(c *gin.Context) {
 	totalMB := int(u.Total) / MB
 	totalGB := int(u.Total) / GB
 	usedPercent := int(u.UsedPercent)
+
 
 	status := http.StatusOK
 	text := "OK"

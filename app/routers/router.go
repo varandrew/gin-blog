@@ -39,7 +39,7 @@ func InitRouter() *gin.Engine {
 	g.Use(middlewares.Options) // 浏览器跨域 OPTIONS 请求设置
 	g.Use(middlewares.Secure)  // 一些安全设置
 
-	gin.SetMode(setting.RunMode)
+	gin.SetMode(setting.ServerSetting.RunMode)
 
 	g.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

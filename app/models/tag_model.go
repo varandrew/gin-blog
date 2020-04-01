@@ -72,3 +72,15 @@ func EditTag(id int, data interface{}) bool {
 	return true
 }
 
+// 硬删除要使用 Unscoped()，这是 GORM 的约定
+func CleanAllTag() bool {
+	db.Unscoped().Where("deleted_on != ?", 0).Delete(&Tag{})
+
+	return true
+}
+
+func CleanAllArticle() bool {
+	db.Unscoped().Where("deleted_on != ?", 0).Delete(&Article{})
+
+	return true
+}
